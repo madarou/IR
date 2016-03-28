@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//mining/CommunityMining.py=utf-8
+encoding//mining/RoughCore.py=utf-8
+encoding//model/Intr_User.py=utf-8
+encoding//model/User_Intr.py=utf-8
+encoding//model/User_Relation.py=utf-8
+encoding//util/CalculateFitness.py=utf-8
+encoding//util/ConstructRelation.py=utf-8
+encoding/Calculate_UserIntr.py=utf-8
+encoding/Print_UserIntr.py=utf-8
+encoding/Print_UserIntr_Optimized.py=utf-8
