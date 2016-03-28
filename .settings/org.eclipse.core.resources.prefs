@@ -1,4 +1,14 @@
 eclipse.preferences.version=1
+encoding//Mining/CommunityMining.py=utf-8
+encoding//Mining/RoughCore.py=utf-8
+encoding//Util/CalculateCi.py=utf-8
+encoding//Util/CalculateFitness.py=utf-8
+encoding//Util/CalculateGi.py=utf-8
+encoding//Util/CalculateIi.py=utf-8
+encoding//Util/CalculateInfectivity.py=utf-8
+encoding//Util/CalculateTagTopicNumber.py=utf-8
+encoding//Util/CalcuteFitnessOfUser.py=utf-8
+encoding//Util/QuantifySimilarity.py=utf-8
 encoding//mining/CommunityMining.py=utf-8
 encoding//mining/RoughCore.py=utf-8
 encoding//model/Intr_User.py=utf-8
