@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//Mining/CommunityMining.py=utf-8
+encoding//Mining/CommunityMiningAsync.py=utf-8
 encoding//Mining/RoughCore.py=utf-8
 encoding//Util/CalculateCi.py=utf-8
 encoding//Util/CalculateFitness.py=utf-8
