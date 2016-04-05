@@ -3,6 +3,7 @@ from __future__ import division
 from model.User_Intr import User_Intr
 from model.User_Relation import User_Relation
 import string
+import math
 '''
 Created on 2016年3月30日
 
@@ -59,21 +60,22 @@ def normalizeIntr(before_list, user_interest_list, I):
         user = before_list[i]
         interest_dict = user.interests
         #interest_dict.sort(lambda y, x: cmp(x[1],y[1]))
-        sorted(interest_dict.items(), key = lambda d:d[1])
+        sorted_interest_list = sorted(interest_dict.items(), key = lambda d:d[1], reverse=True)
         counter = 0 #记录取最大的前I个兴趣
         
         user_after = User_Intr(user_interest_list[i].name)
         new_interest_dict = {}
         #选出最大的I个兴趣
         intr_sum = 0#前I个兴趣的度的总和，后面归一化用
-        for (key, value) in interest_dict.items():
+        #for (key, value) in interest_dict.items():
+        for item in sorted_interest_list:
             #如果是非兴趣标签，就不传播
-            if not isnumeric(key):
+            if not isnumeric(item[0]):
                 continue
             if counter == I:
                 break
-            new_interest_dict[key] = value
-            intr_sum = intr_sum + string.atof(value)
+            new_interest_dict[item[0]] = item[1]
+            intr_sum = intr_sum + string.atof(item[1])
             counter = counter + 1
         #归一化
         for (key, value) in new_interest_dict.items():
@@ -88,7 +90,17 @@ def normalizeIntr(before_list, user_interest_list, I):
     return after_list
         
 def computeWeaken(tag, user_i, user_j):
-    return 1
+    '''
+    标签tag正从user_i传播到user_j
+    计算传播过程中的衰减
+    user_i和user_j是int型
+    '''
+    user_i_influence = user_influence_list[user_i]
+    user_i_j_similarity = string.atof(user_similarity[user_i][user_j])
+    tag_infectivity = tag_infectivity_list[int(tag)]
+    u_tag_fitness = string.atof(user_tag_fitness[user_j][int(tag)])#注意是被传播用户接受tag的概率
+    normalized_infectivity = 1 - math.exp(0-tag_infectivity)
+    return 1 - math.exp(0-(user_i_influence+user_i_j_similarity+u_tag_fitness+normalized_infectivity))
 
 def tag_distribution(user_interest_list):
     '''
@@ -109,13 +121,13 @@ def tag_distribution(user_interest_list):
     return result
 
 if __name__ == '__main__':
-    MAX_TAG_NUM = 8#传播时，每个用户保留的最大标签数
+    MAX_TAG_NUM = 5#传播时，每个用户保留的最大标签数
     user_interest_list=[]
     line_counter = 0
     for line in open('/Users/makao/Yun/Workspace/lab/data/num_user_intr.txt'):
         uname = line.split('|')[0].strip()
         user = User_Intr(uname)
-        interests = interests = line.split('|')[1].strip().split()
+        interests = line.split('|')[1].strip().split()
         interests_dict = {}
         for item in interests:
             tag = item.split('_')[0]
@@ -134,6 +146,26 @@ if __name__ == '__main__':
             follower = line.split('|')[1].split()
         user.setFollower(follower)
         user_relation_list.append(user)
+        
+    #读取Ii，即用户影响力信息
+    user_influence_list = []
+    for line in open('/Users/makao/Yun/Workspace/lab/data/Ii.txt'):
+        user_influence_list.append(string.atof(line.strip()))
+    #读取Sxy，用户相似度矩阵，注意值是string型，用的时候要float化
+    user_similarity = []
+    for line in open('/Users/makao/Yun/Workspace/lab/data/user_similarity.txt'):
+        user_i_list = line.strip().lstrip('[').rstrip(']').split(', ')
+        user_similarity.append(user_i_list)
+    #读取Ini，话题的Infectivity
+    tag_infectivity_list = []
+    for line in open('/Users/makao/Yun/Workspace/lab/data/infectivity.txt'):
+        tag_infectivity_list.append(string.atof(line.strip()))
+    #读取Fyi，用户y接受标签i的概率，Fitness矩阵
+    user_tag_fitness = []
+    for line in open('/Users/makao/Yun/Workspace/lab/data/user_tag_fitness.txt'):
+        user_i_fitness = line.strip().lstrip('[').rstrip(']').split(', ')
+        user_tag_fitness.append(user_i_fitness)
+        
     #读取rough core
 #     cores_list = []
 #     for line in open('/Users/makao/Yun/Workspace/lab/data/rough_core.txt'):
@@ -144,26 +176,39 @@ if __name__ == '__main__':
     for i in range(0, line_counter):
         user_propagate(i, source_list, user_relation_list)
         
-    normalized_list = normalizeIntr(source_list, user_interest_list, MAX_TAG_NUM)
-    del source_list[:]
-    source_list = normalized_list[:]
+        normalized_list = normalizeIntr(source_list, user_interest_list, MAX_TAG_NUM)
+        del source_list[:]
+        source_list = normalized_list[:]
     
     old_tag_distribution = tag_distribution(source_list)
     new_tag_distribution = set()
     
     #如果没有稳定，需要再次传播，after_list就成了下一轮的初始传播list
     run = 0
-    while len(old_tag_distribution.symmetric_difference(new_tag_distribution))>0:
+    #while len(old_tag_distribution.symmetric_difference(new_tag_distribution))>0:
+    while run < 3:#暂时设置
         print str(run) + ' run'
         old_tag_distribution = tag_distribution(source_list)
         for i in range(0, line_counter):
             user_propagate(i, source_list, user_relation_list)
             
-        normalized_list = normalizeIntr(source_list, user_interest_list, MAX_TAG_NUM)
-        del source_list[:]
-        source_list = normalized_list[:]
+            normalized_list = normalizeIntr(source_list, user_interest_list, MAX_TAG_NUM)
+            del source_list[:]
+            source_list = normalized_list[:]
+            
         new_tag_distribution = tag_distribution(source_list)
         run = run + 1
     
+    for item in source_list:
+        print item
+        
+    #打印加上职业和地理位置信息的总的用户兴趣度
+    for item in source_list:
+            uname = item.name
+            original_interest_dict = user_interest_list[int(uname.split('#')[1])].interests
+            final_interest_dict = item.interests
+            for (key, value) in original_interest_dict.items():
+                if not isnumeric(key):
+                    final_interest_dict[key]=value
     for item in source_list:
         print item
