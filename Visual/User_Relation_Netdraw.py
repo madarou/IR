@@ -5,9 +5,9 @@ from model.User_Intr import User_Intr
 Created on 2016年4月2日
 
 @author: makao
-输出用户关注关系图
-*Node data
-"ID"
+输出用户关注关系图，是netdraw的文件形式
+*Node data 
+"ID" interest01
 ...
 *Node properties
 ID
