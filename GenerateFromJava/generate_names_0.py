@@ -5,6 +5,7 @@ Created on 2016年4月9日
 @author: makao
 从origin_name.txt中提取用户名到extracted_names.txt中
 并且按gephi的形式写到user_node.csv中
+在前面加了0号人
 '''
 
 if __name__ == '__main__':
@@ -15,8 +16,11 @@ if __name__ == '__main__':
         names_set.add(name)
     
     f = open('/Users/makao/Yun/Workspace/lab/data/java_relation/extracted_names.txt','w')
-    ff = open('/Users/makao/Yun/Workspace/lab/data/java_relation/user_node.csv','w')
+    ff = open('/Users/makao/Yun/Workspace/lab/data/java_relation/user_nodes.csv','w')
     print >> ff, 'Id,Label'
+    #把0号人加进去
+    print >> ff, '%s' % '0,郭小锅'
+    print >> f, '%s' % '郭小锅'
     counter = 0
     for item in names_set:
         if counter == name_number:

@@ -5,6 +5,8 @@ Created on 2016年4月9日
 
 @author: makao
 在user_edges.csv中增加边
+
+先复制'user_edges副本.txt'再运行程序向里面追加
 '''
 if __name__ == '__main__':
     existed_edge_dict = {}#以边的结点{from#to:1}的形式记录哪些点之间有边存在了

@@ -38,5 +38,7 @@ if __name__ == '__main__':
     
     f=open('/Users/makao/Yun/Workspace/lab/data/java_relation/num_user_intr.txt','w')
     for item in user_intr:
+        if item == '用户-兴趣':
+            continue
         print >> f, '%s' % item
     f.close()

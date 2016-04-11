@@ -50,17 +50,17 @@ if __name__ == '__main__':
     
     for item in user_relation_list:
         uname = item.name
-        a_user_intr = user_interest_list[int(uname)-1]
+        a_user_intr = user_interest_list[int(uname)]
         a_tags = a_user_intr.getInterestTags()
         for flwr in item.follower:
-            b_user_intr = user_interest_list[int(flwr)-1]
+            b_user_intr = user_interest_list[int(flwr)]
             b_tags = b_user_intr.getInterestTags()
             intersactions = a_tags & b_tags
             if len(intersactions) > 0:
                 if intersactions & location_tags:#如果两个人来自同一个地方
-                    similarity[int(uname)-1][int(flwr)-1]=(len(intersactions)/len(b_tags))*LOCATION_WEIGHT
+                    similarity[int(uname)][int(flwr)]=(len(intersactions)/len(b_tags))*LOCATION_WEIGHT
                 else:
-                    similarity[int(uname)-1][int(flwr)-1]=len(intersactions)/len(b_tags)
+                    similarity[int(uname)][int(flwr)]=len(intersactions)/len(b_tags)
                     #print len(intersactions)/len(b_tags)
     
     f = open('/Users/makao/Yun/Workspace/lab/data/java_relation/user_similarity.txt','w')

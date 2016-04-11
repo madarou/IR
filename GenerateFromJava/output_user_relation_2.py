@@ -31,11 +31,14 @@ if __name__ == '__main__':
     #获取总的点数
     user_number = 0
     for line in open('/Users/makao/Yun/Workspace/lab/data/java_relation/user_nodes.csv'):
+        if line.strip()=='Id,Label':
+            continue
         user_number = user_number + 1
     
+    print user_number
     #写到num_user_relation.txt中
     f = open('/Users/makao/Yun/Workspace/lab/data/java_relation/num_user_relation.txt','w')
-    for i in range(1, user_number):
+    for i in range(0, user_number):
         if str(i) in user_relation_dict.keys():
             user_relation = user_relation_dict[str(i)]
             print >> f, '%s' % user_relation

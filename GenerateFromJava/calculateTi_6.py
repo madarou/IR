@@ -22,7 +22,7 @@ def getUserInteresttags(user_number,user_interest_list):
     为了提高效率，user_intr也应该number化
     '''
     #uname = user_relation.name
-    user = user_interest_list[int(user_number)-1]
+    user = user_interest_list[int(user_number)]
     interests = user.interests
     tags = []
     for key in interests:
