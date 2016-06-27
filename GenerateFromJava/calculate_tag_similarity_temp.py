@@ -1,17 +1,14 @@
 #coding=utf-8
-from __future__ import division
-from model.Intr_User import Intr_User
-import itertools 
 '''
-Created on 2016年3月22日
+Created on 2016年5月9日
 
 @author: makao
-使用关联规则，计算任意两个标签的之间的相互传播影响的置信度
-比如在传播标签i时，用户已经有标签j了，那用户接受标签i的概率有多大
-只计算兴趣标签的，地点和工作的标签不计算，因为这之间没有关联性
 
-得到二维矩阵fitness，fitness[i][j]表示在用户拥有标签i的情况下，接受标签j的概率
+通过tag之间公共用户数量占两者数量和的比例来作为两个标签的相似度
 '''
+from __future__ import division
+from model.Intr_User import Intr_User
+import itertools
 
 if __name__ == '__main__':
     interest_user_list=[]
@@ -40,19 +37,29 @@ if __name__ == '__main__':
      
     #挖掘频繁二项集
     #interest_two_frequent=[]
+    total_similarity=[]
     for item in list(itertools.combinations(range(0,tag_counter),2)):
         interest_user_i = interest_user_list[item[0]]
         interest_user_j = interest_user_list[item[1]]
         owners_i = set(interest_user_i.owner)
         owners_j = set(interest_user_j.owner)
         intersaction_number = len(owners_i & owners_j)
+        total_number = len(owners_i)+len(owners_j)
         if intersaction_number > 0:
-            fitness[item[0]][item[1]]=intersaction_number/interest_one_frequent[item[0]]
-            fitness[item[1]][item[0]]=intersaction_number/interest_one_frequent[item[1]]
+            fitness[item[0]][item[1]]=intersaction_number/total_number
+            fitness[item[1]][item[0]]=intersaction_number/total_number
+            total_similarity.append(intersaction_number/total_number)
+        else:
+            total_similarity.append(0)
     
-    f = open('/Users/makao/Yun/Workspace/lab/data/java_relation/tag_fitness.txt','w')
+    f = open('/Users/makao/Yun/Workspace/lab/data/java_relation/tag_similarity_temp.txt','w')
     for item in fitness:
+        #print >> f, '%s' % item  
+        item.sort()
         print >> f, '%s' % item  
     f.close()
     
-    
+    total_similarity.sort()
+    for item in total_similarity:
+        print item
+    print len(total_similarity)
